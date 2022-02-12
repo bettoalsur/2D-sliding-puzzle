@@ -41,7 +41,10 @@ function comecarJogo() {
     }
   }
   
-  baralharQuadros();
+  while (partes[0].id == 0) {
+    baralharQuadros();
+  }
+  
   game = true;
   gameWin = false;
   
@@ -73,21 +76,24 @@ function mostrarImagens () {
   let tamText = tamImg/10;
   
   textSize(tamText);
-  fill(255,0,10);
-  stroke(25);
-  strokeWeight(2);
+  strokeWeight(5);
+  colorMode(HSB);
     
   for(let j = 0; j < M ; j++){
     for(let i = 0; i < M ; i++){
       
       let id = i + j*M;
       
-      if (id < imgAll.length) {        
+      if (id < imgAll.length) {  
+        fill(360*id/imgAll.length,255,255);
+        stroke(0,0,0);
         image(imgAll[id],i*tamImg,j*tamImg,tamImg, tamImg);
         text( id + 1 , i*tamImg + 10 , j*tamImg + 3 + tamText);
       }
     }
   }
+  
+  colorMode(RGB);
   
 }
 
@@ -106,7 +112,7 @@ function criarBotoes () {
   menos.mousePressed(diminuir);
   
   plus = createButton(' + ');
-  plus.position(tamBot,res*0.9);
+  plus.position(tamBot+5,res*0.9);
   plus.style('width',tamBot+'px');
   plus.style('height',tamBot+'px');
   plus.style('font-size',tamFonte+'px');
@@ -115,7 +121,7 @@ function criarBotoes () {
   
   ok = createButton('ok');
   ok.position(85,res*0.9);
-  ok.position(2*tamBot,res*0.9);
+  ok.position(2*tamBot+10,res*0.9);
   ok.style('width',tamBot+'px');
   ok.style('height',tamBot+'px');
   ok.style('font-size',tamFonte+'px');
