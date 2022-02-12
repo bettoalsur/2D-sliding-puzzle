@@ -4,41 +4,24 @@ let dim1 = window.innerWidth;
 let dim2 = window.innerHeight;
 let res = Math.min(dim1,dim2);
 
+let imgAll = [];
 
-// carrega a imagem
-let numImg = 0;
-while (numImg < 1 || numImg > 3) {
-  numImg = parseInt(prompt("\nScar 1 -> 1 \nScar 2 - > 2 \nBeto - > 3"));
-}
-
-numImg--;
-
-let img;
 function preload() {
-  img = loadImage('foto'+numImg+'.jpg');
+  imgAll[0] = loadImage('foto0.jpg');
+  imgAll[1] = loadImage('foto1.jpg');
+  imgAll[2] = loadImage('foto2.jpg');
+  imgAll[3] = loadImage('foto3.jpg');
+  imgAll[4] = loadImage('foto4.jpg');
+  imgAll[5] = loadImage('foto5.jpg');
+  imgAll[6] = loadImage('foto6.jpg');
+  imgAll[7] = loadImage('foto7.jpg');
 }
 
-// divide o canvas
 
-let N = 0;
-while (N < 2 || N > 6) {
-  N = parseInt(prompt("Ingresse um numero entre 2 e 6"));
-}
-
-let w = res/N;
-
-// variaveis jogo
-
-let partes = [];
-let blank = N*N-1;
-let gameWin = false;
-
-
-function setup() {
+function comecarJogo() {
   
-  createCanvas(res,res);
-  
-  // divisoes...
+  w = res/N;
+  blank = N*N-1;
   
   let wImg = img.width/N;
   
@@ -58,9 +41,20 @@ function setup() {
     }
   }
   
-  // shuffle images..
+  baralharQuadros();
+  game = true;
+  gameWin = false;
   
-  for (let i = 0 ; i < 10000 ; i++) {
+  menos.remove();
+  plus.remove();
+  ok.remove();
+  
+}
+
+
+function baralharQuadros () {
+  
+  for (let i = 0 ; i < 7000 ; i++) {
     let index = floor( random(N*N) );
     
     let i = index%N;
@@ -71,17 +65,134 @@ function setup() {
   
 }
 
+
+function mostrarImagens () {
+  
+  let M = ceil(sqrt(imgAll.length));
+  let tamImg = res/M;
+  let tamText = tamImg/10;
+  
+  textSize(tamText);
+  fill(255,0,10);
+  stroke(25);
+  strokeWeight(2);
+    
+  for(let j = 0; j < M ; j++){
+    for(let i = 0; i < M ; i++){
+      
+      let id = i + j*M;
+      
+      if (id < imgAll.length) {        
+        image(imgAll[id],i*tamImg,j*tamImg,tamImg, tamImg);
+        text( id + 1 , i*tamImg + 10 , j*tamImg + 3 + tamText);
+      }
+    }
+  }
+  
+}
+
+let plus, menos, ok;
+function criarBotoes () {
+  
+  let tamBot = res*0.1;
+  let tamFonte = tamBot*0.55;
+  
+  menos = createButton(' - ');
+  menos.position(0,res*0.9);
+  menos.style('width',tamBot+'px');
+  menos.style('height',tamBot+'px');
+  menos.style('font-size',tamFonte+'px');
+  menos.style('align','center');
+  menos.mousePressed(diminuir);
+  
+  plus = createButton(' + ');
+  plus.position(tamBot,res*0.9);
+  plus.style('width',tamBot+'px');
+  plus.style('height',tamBot+'px');
+  plus.style('font-size',tamFonte+'px');
+  plus.style('text-align','center');
+  plus.mousePressed(incrementar);
+  
+  ok = createButton('ok');
+  ok.position(85,res*0.9);
+  ok.position(2*tamBot,res*0.9);
+  ok.style('width',tamBot+'px');
+  ok.style('height',tamBot+'px');
+  ok.style('font-size',tamFonte+'px');
+  ok.style('text-align','center');
+  ok.mousePressed(comecarJogo);
+}
+
+function mostrarImagem () {
+  
+  image(img,0,0,res*0.9,res*0.9);
+  let tam = res*0.9/N;
+  
+  stroke(0);
+  noFill();
+  strokeWeight(1);
+  
+  for(let j = 0; j < N ; j++){
+    for(let i = 0; i < N ; i++){
+      
+      rect(i*tam,j*tam,tam,tam);
+      
+    }
+  }
+  
+}
+
+function incrementar(){
+  if (N<6) {
+    N++;
+  }
+  
+}
+
+function diminuir(){
+  if (N>2) {
+    N--;
+  }
+}
+
+
+// variaveis jogo
+
+let img;
+
+let N;
+let w;
+
+let partes = [];
+let blank;
+let game, gameWin;
+
+
+function setup() {
+  
+  createCanvas(res,res);
+  
+}
+
 function draw() {
   
   background(25);
   
-  verifyWin();
-  
-  for (let i = 0; i < partes.length ; i ++ ) {
+  if (img == null) {
+    mostrarImagens();
+  } else if (w == null) {
+    mostrarImagem();
+  } else if (game && !gameWin) {
     
-    if (!gameWin) {
+    verifyWin();
+    
+    for (let i = 0; i < partes.length ; i ++ ) {
       partes[i].show(i);
-    } else {
+    }
+    
+  } else {
+    
+    for (let i = 0; i < partes.length ; i ++ ) {
       partes[i].showWin(i);
     }
     
@@ -91,11 +202,27 @@ function draw() {
 
 function mouseClicked(){
   
-  if (!gameWin) {
+  if (game && !gameWin) {
     
     let i = floor(mouseX/w);
     let j = floor(mouseY/w);
     move(i,j);
+    
+  }
+  
+  if (img == null) {
+    
+    let M = ceil(sqrt(imgAll.length));
+    let tamImg = res/M;
+    let i = floor(mouseX/tamImg);
+    let j = floor(mouseY/tamImg);
+    let index = i + j*M;
+    
+    if (index < imgAll.length) {
+      img = imgAll[index];
+      N = 2;
+      criarBotoes();
+    }
     
   }
   
