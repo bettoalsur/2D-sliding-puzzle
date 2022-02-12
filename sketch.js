@@ -104,7 +104,7 @@ function criarBotoes () {
   let tamFonte = tamBot*0.55;
   
   menos = createButton(' - ');
-  menos.position(0,res*0.9);
+  menos.position(0*tamBot*1.3,res*0.9);
   menos.style('width',tamBot+'px');
   menos.style('height',tamBot+'px');
   menos.style('font-size',tamFonte+'px');
@@ -112,7 +112,7 @@ function criarBotoes () {
   menos.mousePressed(diminuir);
   
   plus = createButton(' + ');
-  plus.position(tamBot+5,res*0.9);
+  plus.position(1*tamBot*1.3,res*0.9);
   plus.style('width',tamBot+'px');
   plus.style('height',tamBot+'px');
   plus.style('font-size',tamFonte+'px');
@@ -121,7 +121,7 @@ function criarBotoes () {
   
   ok = createButton('ok');
   ok.position(85,res*0.9);
-  ok.position(2*tamBot+10,res*0.9);
+  ok.position(2*tamBot*1.3,res*0.9);
   ok.style('width',tamBot+'px');
   ok.style('height',tamBot+'px');
   ok.style('font-size',tamFonte+'px');
